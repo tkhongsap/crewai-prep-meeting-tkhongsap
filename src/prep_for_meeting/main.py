@@ -9,10 +9,18 @@ from prep_for_meeting.crew import PrepForMeetingCrew
 # interpolate any tasks and agents information
 
 
+def ensure_utf8_output():
+    """Ensure UTF-8 encoding for terminal output"""
+    if sys.stdout.encoding != 'utf-8':
+        sys.stdout.reconfigure(encoding='utf-8')
+
+
 def run():
     """
     Run the crew.
     """
+    # Ensure UTF-8 encoding
+    ensure_utf8_output()
 
     # inputs = {
     #     "participants": [
@@ -43,13 +51,16 @@ def run():
     # Get the result from the crew
     result = PrepForMeetingCrew().crew().kickoff(inputs=inputs)
     
-    # Convert CrewOutput to string using its raw attribute
-    output_text = str(result.raw)
+    # Convert CrewOutput to string using its raw attribute and ensure it's a string
+    output_text = str(result.raw) if hasattr(result, 'raw') else str(result)
+    
+    # Print to terminal with proper encoding
+    print(output_text)
     
     # Save the result to a markdown file
     with open("meeting_briefing.md", "w", encoding="utf-8") as f:
         f.write("# Meeting Briefing\n\n")
-        f.write(output_text)
+        f.write(output_text)  # Now we're writing the string version
     
     return result
 
@@ -58,6 +69,7 @@ def train():
     """
     Train the crew for a given number of iterations.
     """
+    ensure_utf8_output()
     inputs = {"topic": "AI LLMs"}
     try:
         PrepForMeetingCrew().crew().train(
@@ -72,6 +84,7 @@ def replay():
     """
     Replay the crew execution from a specific task.
     """
+    ensure_utf8_output()
     try:
         PrepForMeetingCrew().crew().replay(task_id=sys.argv[1])
 
@@ -83,6 +96,7 @@ def test():
     """
     Test the crew execution and returns the results.
     """
+    ensure_utf8_output()
     inputs = {"topic": "AI LLMs"}
     try:
         PrepForMeetingCrew().crew().test(

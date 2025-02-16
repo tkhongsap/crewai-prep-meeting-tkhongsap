@@ -1,4 +1,5 @@
 from crewai_tools import ScrapeWebsiteTool, SerperDevTool
+import sys
 
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
@@ -7,6 +8,11 @@ from crewai.project import CrewBase, agent, crew, task
 @CrewBase
 class PrepForMeetingCrew:
     """CrewAI Meeting Preparation Crew"""
+
+    def __init__(self):
+        # Set UTF-8 encoding for stdout
+        if sys.stdout.encoding != 'utf-8':
+            sys.stdout.reconfigure(encoding='utf-8')
 
     agents_config = "config/agents.yaml"
     tasks_config = "config/tasks.yaml"
